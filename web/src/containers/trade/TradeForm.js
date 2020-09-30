@@ -10,6 +10,8 @@ import usePrevious from '../../hooks/usePrevious';
 import {
 	clearAllMakes,
 	clearModelsMakes,
+	clearTradeDetails,
+	sendTradeDetails,
 } from '../../redux/actions/tradeActions';
 
 import './TradeForm.scss';
@@ -25,11 +27,13 @@ export const TradeForm = ({ years }) => {
 	const [mileageAlert, setMileageAlert] = useState(false);
 	const prevYear = usePrevious(state.year);
 	const prevMake = usePrevious(state.make);
+	const prevModel = usePrevious(state.model);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (state.year !== prevYear) {
 			dispatch(clearAllMakes());
+			dispatch(clearTradeDetails());
 			setState({
 				year: state.year,
 				make: undefined,
@@ -39,6 +43,7 @@ export const TradeForm = ({ years }) => {
 		}
 		if (state.make !== prevMake) {
 			dispatch(clearModelsMakes());
+			dispatch(clearTradeDetails());
 			setState((curr) => ({
 				...curr,
 				make: state.make,
@@ -46,7 +51,23 @@ export const TradeForm = ({ years }) => {
 				mileage: '',
 			}));
 		}
-	}, [state.year, state.make, prevYear, dispatch, prevMake]);
+		if (state.model !== prevModel) {
+			dispatch(clearTradeDetails());
+			setState((curr) => ({
+				...curr,
+				model: state.model,
+				mileage: '',
+			}));
+		}
+	}, [
+		state.year,
+		state.make,
+		prevYear,
+		dispatch,
+		prevMake,
+		state.model,
+		prevModel,
+	]);
 
 	const handleFormChange = (e, { name, value }) => {
 		name = name ? name : e.target.name;
@@ -59,9 +80,8 @@ export const TradeForm = ({ years }) => {
 		e.preventDefault();
 		const name = e.target.name;
 		const value = e.target.value;
-		//special handler for mileage
+
 		if (name === 'mileage') {
-			console.log('before', value);
 			let lastCh = value.substr(-1);
 			if (value.trim() !== '' && !Number.isNaN(lastCh)) {
 				let num = Number.parseInt(value.replace(/,/g, ''));
@@ -77,7 +97,6 @@ export const TradeForm = ({ years }) => {
 					[name]: '',
 				}));
 			}
-			console.log('end', value);
 		}
 	};
 
@@ -88,7 +107,7 @@ export const TradeForm = ({ years }) => {
 			setMileageAlert(false);
 		}
 	};
-	const handleSearch = () => console.log('Trade', state);
+	const handleSearch = () => dispatch(sendTradeDetails(state));
 
 	return (
 		<Container>
