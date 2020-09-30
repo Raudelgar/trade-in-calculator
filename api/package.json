@@ -1,0 +1,21 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"start": "nodemon index.js",
+		"test": "jest --watch",
+		"test-coverage": "jest --coverage"
+	},
+	"dependencies": {
+		"axios": "^0.20.0",
+		"axios-mock-adapter": "^1.18.2",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"jest": "^26.4.2"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.4"
+	}
+}
